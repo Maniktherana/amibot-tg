@@ -370,6 +370,7 @@ async def wearos_token_handler(update: Update, context: ContextTypes.DEFAULT_TYP
                     """,
                     parse_mode=ParseMode.HTML,
                     disable_web_page_preview=True,
+                    reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
                 )
                 return
 
