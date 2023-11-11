@@ -212,7 +212,27 @@ async def account_options_handler(update: Update, context: ContextTypes.DEFAULT_
     )
 
 
-# async def
+async def delete_account_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.message.reply_text(
+        "Deleting account...",
+    )
+    try:
+        deletion = await delete_profile(update.effective_user.id)
+        if deletion:
+            await update.callback_query.message.reply_text(
+                "Account deleted successfully. Use /login to login again.",
+            )
+        else:
+            await update.callback_query.message.reply_text(
+                "There was an error deleting your account. Please try again later.",
+                reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
+            )
+    except Exception as e:
+        logger.error(e)
+        await update.callback_query.message.reply_text(
+            "There was an error deleting your account. Please try again later.",
+            reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
+        )
 
 
 async def continue_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -234,7 +254,7 @@ async def get_class_schedule_handler(
         )
         if response is None:
             # ! Need better exception handling
-            logger.debug(msg="Error fetching class schedule")
+            logger.warning(msg="Error fetching class schedule")
             await context.bot.send_message(
                 chat_id=user_id,
                 text="There was an error, maybe you are not logged in. Use /login {amizone_id} {password} to login.",
@@ -257,7 +277,7 @@ async def get_class_schedule_handler(
             chat_id=user_id, reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP), text=msg
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error fetching class schedule. Please try again later.",
@@ -292,7 +312,7 @@ async def get_current_course_handler(
             disable_web_page_preview=True,
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error fetching current course. Please try again later.",
@@ -336,7 +356,7 @@ async def login_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"Invalid username or password. Try again with correct credentials.",
             )
     except Exception as e:
-        print(e)
+        logger.error(e)
         await update.message.reply_text(
             "There was an error logging in. Please try again later."
         )
@@ -401,7 +421,7 @@ async def get_attendance_handler(update: Update, context: ContextTypes.DEFAULT_T
             chat_id=user_id, reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP), text=msg
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error fetching attendance. Please try again later.",
@@ -441,7 +461,7 @@ async def get_exam_schedule_handler(update: Update, context: ContextTypes.DEFAUL
                 reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
             )
     except Exception as e:
-        print(e)
+        logger.error(e)
 
         await context.bot.send_message(
             chat_id=user_id,
@@ -526,7 +546,7 @@ async def get_faculty_feedback(
         )
         return GET_FACULTY_FEEDBACK
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error filling faculty feedback. Please try again later.",
@@ -558,7 +578,7 @@ async def get_wifi_info_handler(update: Update, context: ContextTypes.DEFAULT_TY
             chat_id=user_id, text=msg, reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP)
         )
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error fetching WiFi information. Please try again later.",
@@ -635,7 +655,7 @@ async def register_wifi_handler(
         )
         return REGISTER_WIFI
     except Exception as e:
-        print(e)
+        logger.error(e)
         await context.bot.send_message(
             chat_id=user_id,
             text="There was an error registering your MAC address on amizone. Please try again later.",
