@@ -20,23 +20,23 @@ BUTTON_MARKUP = [
         InlineKeyboardButton("WearOS", callback_data="wearos"),
     ],
     [
-        InlineKeyboardButton("Attendance", callback_data="attendance"),
-        InlineKeyboardButton("Class Schedule", callback_data="class_schedule"),
+        InlineKeyboardButton("Today's Schedule", callback_data="class_schedule"),
+        InlineKeyboardButton("Tomorrow's Schedule", callback_data="tomorrow_schedule"),
     ],
     [
-        InlineKeyboardButton("Current Course", callback_data="current_course"),
-        InlineKeyboardButton("Tomorrow Schedule", callback_data="tomorrow_schedule"),
+        InlineKeyboardButton("Attendance", callback_data="attendance"),
+        InlineKeyboardButton("Current Courses", callback_data="current_course"),
+    ],
+    [
+        InlineKeyboardButton("Exam Schedule", callback_data="exam_schedule"),
+        InlineKeyboardButton("Faculty Feedback", callback_data="faculty_feedback"),
     ],
     [
         InlineKeyboardButton("Get WiFi info", callback_data="get_wifi_info"),
         InlineKeyboardButton("Register for WiFi", callback_data="register_wifi"),
     ],
     [
-        InlineKeyboardButton("Exam Schedule", callback_data="exam"),
-        InlineKeyboardButton("Faculty Feedback", callback_data="faculty_feedback"),
-    ],
-    [
-        InlineKeyboardButton("Calendar Schedule", callback_data="calendar"),
+        InlineKeyboardButton("Calendar", callback_data="calendar"),
     ],
 ]
 
@@ -113,7 +113,7 @@ async def button_query_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     if "tomorrow_schedule" in update.callback_query.data:
         await get_class_schedule_handler(update, context, tomorrow=True, cal_date="")
 
-    if "exam" in update.callback_query.data:
+    if "exam_schedule" in update.callback_query.data:
         await get_exam_schedule_handler(update, context)
 
     if "faculty_feedback" in update.callback_query.data:
