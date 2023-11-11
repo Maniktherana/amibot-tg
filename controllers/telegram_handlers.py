@@ -113,26 +113,7 @@ async def button_query_handler(update: Update, context: ContextTypes.DEFAULT_TYP
         await account_options_handler(update, context)
 
     if "delete_account" in update.callback_query.data:
-        await update.callback_query.message.reply_text(
-            "Deleting account...",
-        )
-        try:
-            deletion = await delete_profile(update.effective_user.id)
-            if deletion:
-                await update.callback_query.message.reply_text(
-                    "Account deleted successfully. Use /login to login again.",
-                )
-            else:
-                await update.callback_query.message.reply_text(
-                    "There was an error deleting your account. Please try again later.",
-                    reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
-                )
-        except Exception as e:
-            logger.error(e)
-            await update.callback_query.message.reply_text(
-                "There was an error deleting your account. Please try again later.",
-                reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
-            )
+        await delete_account_handler(update, context)
 
     if "wearos" in update.callback_query.data:
         await wearos_token_handler(update, context)
