@@ -36,7 +36,7 @@ BUTTON_MARKUP = [
         InlineKeyboardButton("Register for WiFi", callback_data="register_wifi"),
     ],
     [
-        InlineKeyboardButton("WearOS", callback_data="wearos"),
+        InlineKeyboardButton("Conncet to Smartwatch", callback_data="wearos"),
     ],
     [
         InlineKeyboardButton("Calendar", callback_data="calendar"),
@@ -365,7 +365,11 @@ async def wearos_token_handler(update: Update, context: ContextTypes.DEFAULT_TYP
             if val:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text=f"Your token is {token}. Please enter this token in the WearOS app.",
+                    text=f"""
+                    Use AmiBot on your watch!\n\nEnter this token in the AmiBot Wear App: {token}\n\nGet the app by <a href='https://play.google.com/store/apps/details?id=in.asetalias.amibotwear'>clicking here</a>
+                    """,
+                    parse_mode=ParseMode.HTML,
+                    disable_web_page_preview=True,
                 )
                 return
 
