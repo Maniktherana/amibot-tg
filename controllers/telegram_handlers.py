@@ -8,16 +8,16 @@ from telegram.ext import (
 )
 from controllers.db import *
 from controllers.rpc_calls import *
-import logging
+from util.logger import AmibotLogger
 from util.env import TOKEN
 from util import helpers
 
-logger = logging.getLogger()
+logger = AmibotLogger("AmiBot Telegram Handlers")
 
 BUTTON_MARKUP = [
     [
         InlineKeyboardButton("About", callback_data="about"),
-        InlineKeyboardButton("WearOS", callback_data="wearos"),
+        InlineKeyboardButton("Account", callback_data="account_options"),
     ],
     [
         InlineKeyboardButton("Today's Schedule", callback_data="class_schedule"),
@@ -34,6 +34,9 @@ BUTTON_MARKUP = [
     [
         InlineKeyboardButton("Get WiFi info", callback_data="get_wifi_info"),
         InlineKeyboardButton("Register for WiFi", callback_data="register_wifi"),
+    ],
+    [
+        InlineKeyboardButton("WearOS", callback_data="wearos"),
     ],
     [
         InlineKeyboardButton("Calendar", callback_data="calendar"),
@@ -98,6 +101,39 @@ async def button_query_handler(update: Update, context: ContextTypes.DEFAULT_TYP
             disable_web_page_preview=True,
         )
 
+    if "cancel" in update.callback_query.data:
+        await update.callback_query.message.reply_text(
+            "Cancelled action.",
+            reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True,
+        )
+
+    if "account_options" in update.callback_query.data:
+        await account_options_handler(update, context)
+
+    if "delete_account" in update.callback_query.data:
+        await update.callback_query.message.reply_text(
+            "Deleting account...",
+        )
+        try:
+            deletion = await delete_profile(update.effective_user.id)
+            if deletion:
+                await update.callback_query.message.reply_text(
+                    "Account deleted successfully. Use /login to login again.",
+                )
+            else:
+                await update.callback_query.message.reply_text(
+                    "There was an error deleting your account. Please try again later.",
+                    reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
+                )
+        except Exception as e:
+            logger.error(e)
+            await update.callback_query.message.reply_text(
+                "There was an error deleting your account. Please try again later.",
+                reply_markup=InlineKeyboardMarkup(BUTTON_MARKUP),
+            )
+
     if "wearos" in update.callback_query.data:
         await wearos_token_handler(update, context)
 
@@ -156,6 +192,27 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     """
     await update.message.reply_text(msg)
+
+
+async def account_options_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.message.reply_text(
+        "Account Options: Select an option",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        "Delete Account", callback_data="delete_account"
+                    ),
+                ],
+                [
+                    InlineKeyboardButton("Cancel", callback_data="cancel"),
+                ],
+            ]
+        ),
+    )
+
+
+# async def
 
 
 async def continue_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

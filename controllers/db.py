@@ -1,8 +1,8 @@
 from util.db_client import profile
 from util.encryption import encrypt, decrypt
-import logging
+from util.logger import AmibotLogger
 
-logger = logging.getLogger()
+logger = AmibotLogger("AmiBot DB")
 
 
 async def checkToken(telegram_id: int, token: int) -> bool:
@@ -83,8 +83,11 @@ async def update_profile(telegram_id: int, username, password) -> str:
 
 
 async def delete_profile(telegram_id: int) -> str:
+    logger.warning(f"Deleting profile for telegram ID {telegram_id}")
     try:
         await profile.delete_one({"_id": telegram_id})
         return "Profile deleted successfully"
     except Exception as e:
         return str(e)
+    finally:
+        logger.warning(f"Deleted profile for telegram ID {telegram_id}")
